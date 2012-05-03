@@ -11,16 +11,20 @@ I am on Mac OS X Lion, am using g++ to compile and run it from the terminal. I g
 
 Changelog
 =========
-	- up to v0.5:	(not in git) basic development
+up to v0.5:
+	- (not in git)
+	- basic development
 
 
 
 Features so far:
 ================
-2D:	- create a PixelMap, draw lines on it and save as bmp
-3D:	- create polygons and trace them
+2D:
+	- create a PixelMap, draw lines on it and save as bmp
+3D:
+	- create polygons and trace them
 	- set up a camera
-	- output traced polygons as bmp
+	- output traced polygons as bmp (still buggy)
 	
 
 
