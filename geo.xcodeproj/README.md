@@ -4,7 +4,7 @@ TraceTheRay
 This is a raytracing 3D-renderer, as the name suggests. It is one of my first C++ projects, and there sure is a lot more to learn, so I am thankful for every kind of tip.
 The current version is 0.5, but is still a very early stage of development and there are still plenty of features missing as well as bugs here and there.
 
-I am on Mac OS X Lion, am using g++ to compile and run it from the terminal. I guess on other platforms errors might occur...
+I am on Mac OS X Snow Leopard, am using g++ to compile and run it from the terminal. I guess on other platforms errors might occur...
 
 
 
