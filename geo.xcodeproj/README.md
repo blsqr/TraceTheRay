@@ -9,6 +9,14 @@ I am on Mac OS X Lion, am using g++ to compile and run it from the terminal. I g
 
 
 
+Changelog
+=========
+up to v0.5:
+	- (not in git)
+	- basic development
+
+
+
 Features so far:
 ================
 2D:
@@ -26,12 +34,3 @@ Known bugs:
 	- outer pixels of PixelMap have wrong coordinates
 	- Camera: calculating the needed vectors is wrong for direction parallel to z-axis
 	- render output is still not correct
-
-
-
-
-Changelog
-=========
-up to v0.5:
-- (not in git)
-- basic development
