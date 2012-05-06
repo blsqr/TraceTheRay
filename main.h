@@ -10,7 +10,15 @@ class PixelMap;
 class Ray;
 class Camera;
 
+//main functions
+void importPolygons(string);
 
+
+//timers
+clock_t t_start = clock();
+clock_t t_init, t_render, t_finish;
+
+//STRUCTS ---------------------------------------------------------
 //color structure, bgra
 struct Color {
 	unsigned char b;
@@ -77,6 +85,7 @@ void Coord::print() {
 	cout << "Coordinate: " << this->x << ", " << this->y << endl;
 }
 
+//INCLUDES ---------------------------------------------------------
 
 //Include other headers
 #include "Vector.h"
@@ -87,8 +96,11 @@ void Coord::print() {
 #include "Camera.h"
 
 
-//Define some objects
-const Color white (255, 255, 255); const Color black (0, 0, 0);
+//Define some constant objects
+const Color white (255, 255, 255);	const Color gray (127, 127, 127);	const Color black (0, 0, 0);
+const Color red (0, 0, 255);		const Color green (0, 255, 0);		const Color blue (255, 0, 0);
+const Color pink (255, 0, 255);		const Color yellow (0, 255, 255);	const Color cyan (255, 255, 0);
+
 const Coord nullCoord (0,0);
 const Vector origin;
 const Vector baseVx (1,0,0);
@@ -97,8 +109,11 @@ const Vector baseVz (0,0,1);
 const Matrix identity (1,1,1);
 const Polygon nullPolygon ();
 
-//dynamic array holding all polygons
+const short divSize = 10;
+
+//dynamic array holding all active polygons, and one holding the polygons passed to the renderer after the voxel-check
 vector<Polygon*> allPolygons;
+vector<Polygon*> visiblePolygons;
 
 
 //Include classes

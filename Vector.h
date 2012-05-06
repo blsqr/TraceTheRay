@@ -39,9 +39,11 @@ public:
 	
 	precs scalarprod(Vector, Vector);
 	Vector crossprod(Vector, Vector);
+	precs angleTo(Vector);			//angle between this and another vector
 	
 	bool isSameSide(Vector, Vector, Vector, Vector);
 	bool isInPolygon(Polygon);
+	bool isInCone(Vector, Vector, Vector, Vector, Vector);
 	
 	//Getters
     precs getLength();

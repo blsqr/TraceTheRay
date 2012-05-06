@@ -42,17 +42,14 @@ Polygon * Ray::trace() {
 		params			= (*paramMatrix) * (tempPg->getEle(0) - this->pos);
 		
 		//check for intersection
-		if (params.getEle(0) != 0) {
-			//now calculate the intersection using the ray equation and the ray parameter
-			intersection	= (this->pos) + (this->dir) * params.getEle(0);
-			
+		if (params.getEle(0) != 0) {			
 			//Perform several checks:
 			//check interception with plane. If it is behind the camera, alpha is smaller or equal to zero
 			if (params.getEle(0) > 0) {
-				
 				//check whether the intersection is within the area of the polygon using the calculated parameters for the plane equation - that is faster than the method Vector::isInPolygon(Polygon) uses.
-				if (params.getEle(1) > 0 && params.getEle(2) > 0 && (params.getEle(1) + params.getEle(1)) <= 1) {
-					
+				if (params.getEle(1) > 0 && params.getEle(2) > 0 && (params.getEle(1) + params.getEle(2)) <= 1) {
+					//now calculate the intersection using the ray equation and the ray parameter
+					intersection	= (this->pos) + (this->dir) * params.getEle(0);
 					//check distance to pos
 					tempDis	= (intersection - (this->pos)).getLength();
 					
@@ -73,7 +70,6 @@ Polygon * Ray::trace() {
 		}
 		//else cout << "Polygon " << i << ": no intersection." << endl;
 	}
-	
 	return nearestPg;
 }
 

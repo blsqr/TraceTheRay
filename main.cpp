@@ -40,18 +40,17 @@ SIMPLE GEOMETRY
  - classes for
 	bodies (connected polygons)
  - RayTracer
+	- check voxels for intersections first
 	- lights, shading, shadows, mirrors, transparency...
  - import data for creating the scene, bodies, polygons.
+ - use Eigen library for geometry?
  
  BUGS:
  - drawLine: "Fussel"
- - PixelMap Randbereiche... 
- - Camera applyVC ...
- - Polygon checking...
+ - PixelMap Randbereiche...
  
  IMPROVE / CHECK:
  - OOP: main as abstract base class for everything in order to have constant objects to inherit
- - check crossprod operator /
  - speed and memory management
  
 */
@@ -62,6 +61,7 @@ SIMPLE GEOMETRY
 #include <fstream>
 #include <math.h>
 #include <string.h>
+#include <time.h>
 #include <vector>
 
 #include "main.h"
@@ -78,38 +78,51 @@ int main () {
 	//MAIN PROGRAM ------------------------
 	
 	//create vectors, matrices, polygons
-	Vector a1 (0,5,0);
-	Vector b1 (0,15,5);
-	Vector c1 (0,0,5);
-	Vector a2 (0,-5,0);
-	Vector b2 (0,-10,-5);
-	Vector c2 (0,0,-5);
-	Vector d (-10,0,0);
-	Vector e (1,0,0);
+	Vector a0 (0,0,0);
+	Vector a1 (5,0,10);
+	Vector a2 (0,5,10);
+	Vector a3 (-5,0,10);
+	Vector a4 (0,-5,10);
+	Vector a5 (10,0,-10);
+	Vector a6 (0,10,-10);
+	Vector a7 (-10,0,-10);
+	Vector a8 (0,-10,-10);
+	Vector a9 (0,0,-5);
+	
+	//Doppelpyramide
+	Polygon pg_top_1 (a1,a2,a3,white);
+	Polygon pg_top_2 (a1,a3,a4,white);
+	
+	Polygon pg_tri_1 (a1,a0,a2,red);
+	Polygon pg_tri_2 (a2,a0,a3,green);
+	Polygon pg_tri_3 (a3,a0,a4,red);
+	Polygon pg_tri_4 (a4,a0,a1,green);
+	
+	Polygon pg_tri_5 (a5,a0,a6,pink);
+	Polygon pg_tri_6 (a6,a0,a7,blue);
+	Polygon pg_tri_7 (a7,a0,a8,pink);
+	Polygon pg_tri_8 (a8,a0,a5,blue);
+	
+	Polygon pg_btm_1 (a5,a6,a7,white);
+	Polygon pg_btm_2 (a5,a7,a8,white);
+
 	
 	/*Matrix mat_a (0,1,0,1,0,0,0,0,1);
 	Matrix mat_b (1,0,1);
 	Matrix mat_c (1,2,0,2,3,0,3,4,1);*/
 	
-	Color red (0, 0, 255);
-	Color green (0, 255, 0);
-	
-	Polygon pg1 (a1,b1,c1,red);
-	Polygon pg2 (a2,b2,c2,green);
-	
-	/*Ray theRay(d,e);
-	
-	Polygon * intersected = theRay.trace();
-	
-	intersected->print("intersected");
-	*/
-	
-	
 	//Camera tests
-	Camera theCam	= Camera(d, e, 0, 640, 360, 46.8);
+	Vector pos (-45,27,15);
+	Vector dir (1,-0.6,-0.32);
+	Camera theCam	= Camera(pos, dir, 0, 640, 320, 20);
 	//theCam.print("theCam:");
 	
+	t_init = clock();
+	
 	PixelMap * render = theCam.render();
+	
+	t_render = clock();
+	
 	render->createFile();
 	
 	
@@ -140,7 +153,17 @@ int main () {
 	test_aa.createFile();//*/
 	
 	//END OF MAIN PROGRAM -----------------
+	t_finish = clock();
+	
+	cout << "Runtimes:"<<endl;
+	cout << "\tInit:   " << (t_init-t_start) << endl;
+	cout << "\tRender: " << (t_render-t_init) << endl;
+	cout << "\tFile:   " << (t_finish-t_render) << endl;
 	
     return 0;
 }
 //#######################
+
+void importPolygons(string path) {
+
+}

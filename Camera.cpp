@@ -37,6 +37,9 @@ void Camera::setVPos(Coord vP) {
 void Camera::resetVPos() {
 	this->vPos	= 0;
 }
+void Camera::setVDivNo(short no) {
+	this->vDivNo	= no;
+}
 
 
 
@@ -62,6 +65,9 @@ precs Camera::getVAngle() {
 Coord Camera::getVPos() {
 	return this->vPos;
 }
+short Camera::getVDivNo() {
+	return this->vDivNo;
+}
 
 
 //General methods
@@ -70,7 +76,7 @@ bool Camera::nextPixel() {
 	
 	//increment coordinates
 	if ((temp.x + 1) == this->vWidth) {
-		cout << "Finished line " << temp.y << endl;
+		//cout << "Finished line " << temp.y << endl;
 		temp.y = (temp.y + 1) % (this->vHeight);	//next y-pixel
 	}
 	temp.x = (temp.x + 1) % (this->vWidth);			//next x-pixel
@@ -80,6 +86,43 @@ bool Camera::nextPixel() {
 	if (temp == nullCoord) return true;		//is at (0,0) again
 	else return false;						//is not at the end yet
 }
+
+/*//move within divisons and return true, if at the end (top right) of one division)
+bool Camera::nextPixel() {
+	Coord temp		= getVPos();
+	short divNo		= getVDivNo();
+	
+	short xDivs		= ceil(this->vWidth/divSize);			//divs in one row
+	short yDivs		= ceil(this->vHeight/divSize);			//divs in one column
+	
+	//increment coordinates
+	if ((temp.x + 1) == xDivEnd || (temp.x + 1) == this->vWidth) {
+		//cout << "Finished line/div " << temp.y << endl;
+		temp.y = (temp.y + 1) % (this->vHeight);	//next y-pixel
+	}
+	
+	
+	temp.x++;		//increment x
+	if (temp.x % divSize == 0 || temp.x == this->vWidth) {
+		temp.x = divNo*divSize;					//set x to beginning of div
+		temp.y = (temp.y + 1) % this->vHeight;	//increment y
+	}
+	
+	if (temp.x == divNO*divSize;
+	this->setVPos(temp);
+	
+	if (temp == nullCoord) return true;		//is at (0,0) again
+	else return false;						//is not at the end yet
+}*/
+
+bool Camera::nextDiv() {
+	this->setVDivNo((this->getVDivNo() + 1)%divSize);
+	return (this->getVDivNo() == 0);		//returns true, if at the end
+}
+
+
+
+
 
 bool Camera::applyVC() {
 	/*
@@ -94,17 +137,25 @@ bool Camera::applyVC() {
 	short tVH		= this->getVHeight();
 	precs tRatio	= (float) tVW/tVH;
 	precs tVA		= this->getVAngle();
-	
+	Coord temp;
 	
 	//calculate vX: drop z-coordinate of cDir --> parallel to xy-plane. rotate 90° ccw around z-axis --> vX _|_ cDir
 	this->vX		= tCDir;
-	this->vX.setEle(2, 0);			//~~~~~~
-	this->vX.rotZ(90);
+	if (this->vX.getEle(0) != 0 || this->vX.getEle(1) != 0) {
+		this->vX.setEle(2, 0);
+		this->vX.rotZ(90);
+	}
+	else if (this->vX.getEle(2) != 0) {
+		this->vX.rotX(90);
+	}
+	else {
+		cout << "cDir not set!" << endl;
+	}
 	this->vX.rotate(tCDir, this->cAngle);
 	
 	//check vX * cDir = 0, rounded to 14 decimal places
-	if (roundf((this->vX * this->getCDir())*pow(10, 14)) != 0) {
-		cout << "(vX * cDir)*(10^14) = " << (pow(10,14))*(this->vX * this->getCDir()) << endl;
+	if (roundf((this->vX * this->getCDir())) != 0) {
+		cout << "(vX * cDir) = " << (this->vX * this->getCDir()) << endl;
 	}
 	
 	
@@ -124,12 +175,17 @@ bool Camera::applyVC() {
 	//calculate bottom left vector, the vector the rendering starts from, pointing to the center of pixel (0,0)
 	this->vBL		= tCDir - (this->vDiag * 0.5) + (this->vdX * 0.5) + (this->vdY * 0.5);
 	
+	
+	//calculate number of max divisions
+	this->vDivMax	= ceil((tVW*tVH)/(divSize*divSize));
+	this->vDivNo	= 0;
+	
 	return true;
 }
 
 void Camera::generateRay(bool first = false) {
 	if (first) this->vRay.setPos(this->cPos);
-	this->vRay.setDir(this->vBL + this->vdX * this->vPos.x + this->vdY * this->vPos.y);	//~~~~~~~~
+	this->vRay.setDir(this->vBL + this->vdX * this->vPos.x + this->vdY * this->vPos.y);
 }
 
 PixelMap * Camera::render(short aa=1) {
@@ -140,8 +196,13 @@ PixelMap * Camera::render(short aa=1) {
 	Color tracedColor;
 	bool end;
 	
-	//Initialize PixelMap with given dimensions, check antialiasing factor
+	//Initialize PixelMap with given dimensions
 	PixelMap * render	= new PixelMap ("render", tVW, tVH);
+	
+	//apply the new vWidth and Height to Camera
+	if (aa != 1) {
+		this->setView(tVW, tVH, this->getVAngle(), true);
+	}
 	
 	//reset vPos in Camera and pencilPos in PixelMap
 	resetVPos();
@@ -157,7 +218,7 @@ PixelMap * Camera::render(short aa=1) {
 		//RayTracing. Returns pointer to the valid polygon
 		tracedPg	= this->vRay.trace();
 		
-		//check for intersection. No intersection: backgroundcolor
+		//check for intersection. No intersection: set pixel to backgroundcolor
 		if (tracedPg->isActive()) {
 			tracedColor	= tracedPg->getColor();
 		}
@@ -173,10 +234,16 @@ PixelMap * Camera::render(short aa=1) {
 		if (end) break;
 	}
 	
+	
 	//apply AntiAliasing
 	*render	= render->antiAliase(aa);
 	
 	cout << "Finished rendering." << endl;
+	
+	//reset vWidth and Height to old values
+	if (aa != 1) {
+		this->setView(tVW/aa, tVH/aa, this->getVAngle(), true);
+	}
 	
 	return render;
 }

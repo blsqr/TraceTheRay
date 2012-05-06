@@ -39,6 +39,7 @@ public:
 	void scaleAbs(precs);			//(absolute in space, relative to origin)
 	void scaleRel(precs);			//(relative to center): Move to origin, scale, move back
 	
+	bool isInCone(Vector, Vector, Vector, Vector, Vector);
+	
 	void print(string = "");
-
 };

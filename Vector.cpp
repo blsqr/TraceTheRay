@@ -83,7 +83,7 @@ void Vector::rotate(Matrix rotation) {
 	len2 = this->getLength();
 	if (fabs((len1/len2)-1) > 0.0000000000001) {
 		*this = (*this)*(len1/len2);
-		cout << "corrected length" << len1/len2 << endl;
+		//cout << "corrected length" << len1/len2 << endl;
 	}
 }
 void Vector::rotate(Vector axis, precs angle) {
@@ -122,6 +122,10 @@ Vector Vector::crossprod(Vector a, Vector b) {
     return temp;
 }
 
+precs Vector::angleTo(Vector a) {
+	return acos(((*this)*a)/(this->getLength()*a.getLength()));
+}
+
 //checks, whether two vectors p1, p2 are at the same side of a line between vectors a and b
 bool Vector::isSameSide(Vector p1, Vector p2, Vector a, Vector b) {
 	Vector cp1 = crossprod(b-a, p1-a);
@@ -139,6 +143,17 @@ bool Vector::isInPolygon(Polygon pg) {
 	
 	if (isSameSide(p, a, b, c) && isSameSide(p, b, a, c) && isSameSide(p, c, a, b)) return true;
 	else return false;
+}
+
+
+//check, whether a point p lies within a body created by four rays a1,...,a4 (starting from pos)
+//IMPORTANT: a1, a2, a3, a4 must be given in ccw direction 
+bool Vector::isInCone(Vector pos, Vector a1, Vector a2, Vector a3, Vector a4) {
+	Vector ray[4] = {a1, a2, a3, a4};
+	for (int i=0; i<4; i++) {
+		if ((crossprod(ray[(i+1)%4],ray[i])).angleTo(*this-pos) > M_PI/2) return false;
+	}
+	return true;
 }
 
 

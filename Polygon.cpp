@@ -59,6 +59,27 @@ void Polygon::setColor(Color color) {
 }
 
 
+//Getters
+Vector Polygon::getEle(int coor) {
+	return this->ele[coor];
+}
+Color Polygon::getColor() {
+	return this->color;
+}
+Vector Polygon::getCenter() {
+	return this->center;
+}
+Vector Polygon::getNormal() {
+	return this->normal;
+}
+precs Polygon::getArea() {
+	return this->area;
+}
+bool Polygon::isActive() {
+	return this->status;
+}
+
+
 //Translations
 void Polygon::moveBy(Vector param) {
 	this->setEle(
@@ -108,25 +129,19 @@ void Polygon::scaleRel(precs factor) {
 
 
 
-//Getters
-Vector Polygon::getEle(int coor) {
-	return this->ele[coor];
+//Check whether any of the points of the polygon is in a cone given by four rays emerging from pos
+bool Polygon::isInCone(Vector pos, Vector a1, Vector a2, Vector a3, Vector a4) {
+	for (int i=0; i<3; i++) {
+		if (this->getEle(i).isInCone(pos, a1, a2, a3, a4)) return true;
+	}
+	return false;
 }
-Color Polygon::getColor() {
-	return this->color;
-}
-Vector Polygon::getCenter() {
-	return this->center;
-}
-Vector Polygon::getNormal() {
-	return this->normal;
-}
-precs Polygon::getArea() {
-	return this->area;
-}
-bool Polygon::isActive() {
-	return this->status;
-}
+
+
+
+
+
+
 
 void Polygon::print(string text) {
 	cout << endl;
