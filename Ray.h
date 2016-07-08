@@ -3,7 +3,7 @@
 
 class Ray {
 private:
-	Vector pos, dir;				//start-pos and direction of the ray
+	Vector pos, dir;						//start-pos and direction of the ray
 	
 public:
 	Ray(Vector, Vector);
@@ -14,7 +14,9 @@ public:
 	Vector getPos();
 	Vector getDir();
 	
-	Polygon * trace();				//returns the pointer to the nearest intersected polygon, or null pointer
+	Polygon * trace(vector<Polygon*> *);	//returns the pointer to the nearest intersected polygon, or null pointer
+	
+	bool isIntersecting(Polygon *);
 	
 	void print(string);
 };

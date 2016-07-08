@@ -23,6 +23,9 @@ void PixelMap::setPixel(Color color, bool move=false) {
 	if (isOnCanvas(this->pencilPos)) this->pixel[this->pencilPos.x][this->pencilPos.y]	= color;
 	if (move) this->nextPixel();
 }
+void PixelMap::setPixel(Color color, Coord pos) {
+	if (isOnCanvas(pos)) this->pixel[pos.x][pos.y]	= color;
+}
 void PixelMap::setPixel(char b, char g, char r, char a=0) {
 	Color color (b, g, r, a);
 	if (isOnCanvas(this->pencilPos)) this->pixel[this->pencilPos.x][this->pencilPos.y]	= color;

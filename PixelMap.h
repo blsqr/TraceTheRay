@@ -34,7 +34,8 @@ public:
 	
 	void setDim(short, short);					//set dimensions of the pixelmap
 	
-	void setPixel(Color, bool);					//pass color struct, use pencil position
+	void setPixel(Color, bool);					//pass color struct, use pencil position, move to next pixel, if bool true
+	void setPixel(Color, Coord);				//pass color struct and position
 	void setPixel(char, char, char, char);		//pass bgra values, use pencil position
 	void setPixel(short, short, Color);			//pass color struct, use given position
 	void setPixel(short, short, char, char, char, char);	//pass bgra values, a opt., pos given

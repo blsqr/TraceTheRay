@@ -47,7 +47,9 @@ SIMPLE GEOMETRY
  
  BUGS:
  - drawLine: "Fussel"
- - PixelMap Randbereiche...
+ - PixelMap outer regions
+ - Polygon::isInCone does not check for small pieces of polygons, that are not intersected by the five rays used
+ - nextPixel does weird things at high resolutions (jumps from 1300 to -1300, from 179 to 280 ...)
  
  IMPROVE / CHECK:
  - OOP: main as abstract base class for everything in order to have constant objects to inherit
@@ -60,6 +62,7 @@ SIMPLE GEOMETRY
 #include <iostream>
 #include <fstream>
 #include <math.h>
+#include <algorithm>
 #include <string.h>
 #include <time.h>
 #include <vector>
@@ -114,7 +117,7 @@ int main () {
 	//Camera tests
 	Vector pos (-45,27,15);
 	Vector dir (1,-0.6,-0.32);
-	Camera theCam	= Camera(pos, dir, 0, 640, 320, 20);
+	Camera theCam	= Camera(pos, dir, 0, 500, 500, 46.8, 25);
 	//theCam.print("theCam:");
 	
 	t_init = clock();
@@ -155,7 +158,7 @@ int main () {
 	//END OF MAIN PROGRAM -----------------
 	t_finish = clock();
 	
-	cout << "Runtimes:"<<endl;
+	cout << "Runtimes: " << endl;
 	cout << "\tInit:   " << (t_init-t_start) << endl;
 	cout << "\tRender: " << (t_render-t_init) << endl;
 	cout << "\tFile:   " << (t_finish-t_render) << endl;

@@ -17,8 +17,8 @@ Vector Ray::getDir() {
 	return this->dir;
 }
 
-Polygon * Ray::trace() {
-	Polygon * nearestPg = new Polygon();
+Polygon * Ray::trace(vector<Polygon*> * thePolygons = &allPolygons) {
+	Polygon * nearestPg = new Polygon();	//create nullPolygon (inactive)
 	Polygon * tempPg;
 	
 	Matrix * paramMatrix;		//matrix from the dir-vector and two sides of the polygon creating its plane
@@ -30,9 +30,9 @@ Polygon * Ray::trace() {
 	precs tempDis		= 0;
 	
 	//loop through allPolygons
-	for (int i=0; i < allPolygons.size(); i++) {
+	for (int i=0; i < thePolygons->size(); i++) {
 		//set pointer tempPg to the current polygon
-		tempPg			= allPolygons[i];
+		tempPg			= (*thePolygons)[i];
 		
 		//create matrix (dir, a-b, a-c)
 		paramMatrix		= new Matrix (this->dir, tempPg->getEle(0) - tempPg->getEle(1), tempPg->getEle(0) - tempPg->getEle(2));
@@ -71,6 +71,38 @@ Polygon * Ray::trace() {
 		//else cout << "Polygon " << i << ": no intersection." << endl;
 	}
 	return nearestPg;
+}
+
+
+//Similar to above function, but only returning boolean value for one polygon
+bool Ray::isIntersecting(Polygon * tempPg) {
+	Matrix * paramMatrix;
+	
+	Vector params;
+	Vector intersection;
+		
+	//create matrix
+	paramMatrix		= new Matrix (this->dir, tempPg->getEle(0) - tempPg->getEle(1), tempPg->getEle(0) - tempPg->getEle(2));
+	
+	//calculate parameters
+	paramMatrix->invert();
+	params			= (*paramMatrix) * (tempPg->getEle(0) - this->pos);
+	
+	//check for intersection
+	if (params.getEle(0) != 0) {	
+		//check whether it is behind the camera
+		if (params.getEle(0) > 0) {
+			//check whether the intersection is within the area of the polygon
+			if (params.getEle(1) > 0 && params.getEle(2) > 0 && (params.getEle(1) + params.getEle(2)) <= 1) {
+				return true;
+			}
+			//else not within polygon.
+		}
+		//else behind camera.
+	}
+	//else no intersection
+	
+	return false;
 }
 
 

@@ -129,11 +129,24 @@ void Polygon::scaleRel(precs factor) {
 
 
 
-//Check whether any of the points of the polygon is in a cone given by four rays emerging from pos
+//Check whether the polygon is in a cone given by four rays emerging from pos
 bool Polygon::isInCone(Vector pos, Vector a1, Vector a2, Vector a3, Vector a4) {
+	//check points
 	for (int i=0; i<3; i++) {
 		if (this->getEle(i).isInCone(pos, a1, a2, a3, a4)) return true;
 	}
+	
+	Vector * coneRays[4]	= {&a1, &a2, &a3, &a4};
+	Ray temp (pos, a1);
+	
+	//check intersections
+	for (int j=0; j<4; j++) {
+		temp.setDir(*(coneRays[j]));
+		if (temp.isIntersecting(this)) return true;
+	}
+	temp.setDir(a1+a2+a3+a4);
+	if (temp.isIntersecting(this)) return true;
+	
 	return false;
 }
 

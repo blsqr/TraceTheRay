@@ -18,7 +18,7 @@ void importPolygons(string);
 clock_t t_start = clock();
 clock_t t_init, t_render, t_finish;
 
-//STRUCTS ---------------------------------------------------------
+//STRUCTS   -------------------------------------------------------
 //color structure, bgra
 struct Color {
 	unsigned char b;
@@ -53,6 +53,7 @@ struct Coord {
 	Coord(short, short);
 	bool operator== (Coord);
 	Coord operator= (short);
+	Coord operator+ (Coord);
 	void apply(); //rounds the precise coordinates and applies the new values to the shorts
 	void sync(); //applies the shorts to the precise coordinates
 	void print();
@@ -71,6 +72,13 @@ Coord Coord::operator= (short param) {
 	this->x = param;
 	this->y = param;
 	this->apply();
+	return *this;
+}
+Coord Coord::operator+ (Coord param) {
+	this->x += param.x;
+	this->y += param.y;
+	this->xp += param.xp;
+	this->yp += param.yp;
 	return *this;
 }
 void Coord::apply() {
@@ -109,11 +117,8 @@ const Vector baseVz (0,0,1);
 const Matrix identity (1,1,1);
 const Polygon nullPolygon ();
 
-const short divSize = 10;
-
-//dynamic array holding all active polygons, and one holding the polygons passed to the renderer after the voxel-check
+//dynamic array holding all active polygons
 vector<Polygon*> allPolygons;
-vector<Polygon*> visiblePolygons;
 
 
 //Include classes
